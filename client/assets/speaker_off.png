@@ -1,0 +1,7 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 7H5L9 3V17L5 13H2V7Z" stroke="#ed4245" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M13 7C14.1046 7 15 7.89543 15 9V11C15 12.1046 14.1046 13 13 13" stroke="#ed4245" stroke-width="2" stroke-linecap="round"/>
+    <!-- Çarpı işareti -->
+    <path d="M11 6L17 12" stroke="#ed4245" stroke-width="2" stroke-linecap="round"/>
+    <path d="M17 6L11 12" stroke="#ed4245" stroke-width="2" stroke-linecap="round"/>
+</svg> 
