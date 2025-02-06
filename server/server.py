@@ -5,9 +5,13 @@ from .database import Database
 
 class VoiceChatServer:
     def __init__(self):
-        self.sio = socketio.AsyncServer(cors_allowed_origins='*')
+        self.sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='aiohttp')
         self.app = web.Application()
         self.sio.attach(self.app)
+        
+        # Test endpoint'i ekle
+        self.app.router.add_get('/', self.handle_index)
+        
         self.users = {}  # {sid: username}
         self.rooms = {
             'Genel Sohbet': set(),
@@ -129,13 +133,17 @@ class VoiceChatServer:
                     'timestamp': timestamp
                 }, room=room)
         
-    async def start(self, host='localhost', port=5000):
+    async def start(self, host='0.0.0.0', port=8080):
         print(f'Server başlatılıyor... {host}:{port}')
         runner = web.AppRunner(self.app)
         await runner.setup()
         site = web.TCPSite(runner, host, port)
         await site.start()
         
+    async def handle_index(self, request):
+        """Test için basit bir endpoint"""
+        return web.Response(text="Voice Chat Server is running!", status=200)
+
 if __name__ == '__main__':
     import asyncio
     import sys

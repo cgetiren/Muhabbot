@@ -50,7 +50,7 @@ class ClientSocket(QObject):
         def on_audio_data(data):
             self.audio_received.emit(data['audio'])
     
-    def connect_to_server(self, url='http://localhost:5000'):
+    def connect_to_server(self, url='http://129.159.223.71:8080'):
         try:
             self.sio.connect(url)
             return True
