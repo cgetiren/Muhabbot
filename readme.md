@@ -45,16 +45,16 @@ Bu uygulama, Python tabanlı bir masaüstü sesli sohbet uygulamasıdır. PyQt6 
 4. Mikrofon ve hoparlör kontrollerini kullanarak sesli sohbete katılın
 
 ## Proje Yapısı
-client/
-├── assets/ # İkonlar ve görsel dosyalar
-├── audio/ # Ses yönetimi modülleri
-├── network/ # Ağ iletişimi modülleri
-├── ui/ # Kullanıcı arayüzü modülleri
-└── main.py # Client ana uygulama
-server/
-├── database.py # Veritabanı yönetimi
-├── room_manager.py # Oda yönetimi
-└── server.py # Server uygulaması
+   client/
+   ├── assets/ # İkonlar ve görsel dosyalar
+   ├── audio/ # Ses yönetimi modülleri
+   ├── network/ # Ağ iletişimi modülleri
+   ├── ui/ # Kullanıcı arayüzü modülleri
+   └── main.py # Client ana uygulama
+   server/
+   ├── database.py # Veritabanı yönetimi
+   ├── room_manager.py # Oda yönetimi
+   └── server.py # Server uygulaması
 
 ## Özellikler Detayı
 - **Gerçek zamanlı ses iletimi**: Düşük gecikmeli ses aktarımı

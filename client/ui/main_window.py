@@ -1,13 +1,16 @@
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                             QPushButton, QLabel, QListWidget, QTextEdit)
 from PyQt6.QtCore import Qt, QTimer, QSize
-from ..network.client_socket import ClientSocket
-from ..audio.audio_manager import AudioManager
-from .settings_window import SettingsPanel
+from client.network.client_socket import ClientSocket
+from client.audio.audio_manager import AudioManager
+from client.ui.settings_window import SettingsPanel
 import numpy as np
 from datetime import datetime
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QEvent
+from pathlib import Path
+
+ASSETS_PATH = Path(__file__).resolve().parent.parent / "assets"
 
 class MainWindow(QMainWindow):
     def __init__(self, username):
@@ -31,6 +34,10 @@ class MainWindow(QMainWindow):
         
         # Server'a bağlan ama kanala otomatik katılma
         self.connect_to_server()
+        
+        # Ayarlar panelini oluştur
+        self.settings_panel = SettingsPanel(self)
+        self.settings_panel.hide()
         
     def init_ui(self):
         # Ana pencere ayarları
@@ -155,7 +162,7 @@ class MainWindow(QMainWindow):
         
         # Ayarlar butonu
         self.settings_button = QPushButton()
-        self.settings_button.setIcon(QIcon("client/assets/settings.png"))
+        self.settings_button.setIcon(QIcon(str(ASSETS_PATH / "settings.png")))
         self.settings_button.setIconSize(QSize(20, 20))
         self.settings_button.setFixedSize(32, 32)
         self.settings_button.setToolTip("Ses Ayarları")
@@ -184,10 +191,6 @@ class MainWindow(QMainWindow):
         # Ana layout'a panelleri ekle
         main_layout.addWidget(left_panel)
         main_layout.addWidget(right_panel)
-        
-        # Ses ayarları panelini oluştur
-        self.settings_panel = SettingsPanel(self)
-        self.settings_panel.hide()
         
     def init_channel_widgets(self):
         for channel in ["Genel Sohbet", "Oyun Odası", "Müzik Odası"]:
@@ -309,7 +312,7 @@ class MainWindow(QMainWindow):
                     ch_widgets['users'].clear()
                     
                     # Kendimizi ekle
-                    user_label = QLabel(f"�� {self.username}")
+                    user_label = QLabel(f"👤 {self.username}")
                     user_label.setStyleSheet("""
                         color: #dcddde;
                         padding: 4px 8px 4px 8px;
