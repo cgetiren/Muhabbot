@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="#B9BBBE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M16.1667 10C16.1667 10 13.3333 14.1667 10 14.1667C6.66671 14.1667 3.83337 10 3.83337 10C3.83337 10 6.66671 5.83334 10 5.83334C13.3333 5.83334 16.1667 10 16.1667 10Z" stroke="#B9BBBE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Ana dişli çark -->
+        <path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"/>
+        
+        <!-- Dış çerçeve ve dişliler -->
+        <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+        
+        <!-- İç daire -->
+        <circle cx="12" cy="12" r="3"/>
+    </g>
 </svg> 

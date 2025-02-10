@@ -69,31 +69,108 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(0)
         main_layout.setContentsMargins(0, 0, 0, 0)
         
-        # Sol panel (kanallar)
-        left_panel = QWidget()
-        left_panel.setFixedWidth(240)
-        left_panel.setStyleSheet("background-color: #2f3136;")
-        left_layout = QVBoxLayout(left_panel)
-        left_layout.setSpacing(0)
-        left_layout.setContentsMargins(0, 0, 0, 0)
+        # Sol panel için bir dikey layout oluşturuyoruz
+        left_panel_layout = QVBoxLayout()
         
-        # Kanallar başlığı
-        channels_header = QWidget()
-        channels_header.setStyleSheet("background-color: #2f3136; padding: 10px;")
-        channels_header_layout = QVBoxLayout(channels_header)
-        channels_label = QLabel("KANALLAR")
-        channels_label.setStyleSheet("color: #8e9297; font-size: 12px; font-weight: bold;")
-        channels_header_layout.addWidget(channels_label)
-        
-        # Kanallar listesi
-        self.channels_widget = QWidget()
-        self.channels_layout = QVBoxLayout(self.channels_widget)
-        self.channels_layout.setSpacing(2)
-        self.channels_layout.setContentsMargins(8, 0, 8, 0)
+        # Kanallar
+        channels_widget = QWidget()
+        self.channels_layout = QVBoxLayout(channels_widget)
+        self.channels_layout.setSpacing(4)
+        self.channels_layout.setContentsMargins(10, 0, 10, 0)
         
         # Her kanal için widget ve kullanıcı listesi oluştur
         self.channel_widgets = {}
         self.init_channel_widgets()
+        
+        left_panel_layout.addWidget(channels_widget)
+        
+        # Kullanıcı bilgileri ve butonlar için yatay bir layout oluşturuyoruz
+        user_info_layout = QHBoxLayout()
+        
+        # Kullanıcı adı label'ını güncelleyin
+        self.user_label = QLabel(self.username)
+        self.user_label.setStyleSheet("""
+            color: #ffffff;
+            font-size: 14px;
+            padding: 4px;
+        """)
+        user_info_layout.addWidget(self.user_label)
+        
+        # Ayarlar butonu
+        self.settings_button = QPushButton()
+        self.settings_button.setIcon(QIcon(str(ASSETS_PATH / "settings.png")))
+        self.settings_button.setIconSize(QSize(20, 20))
+        self.settings_button.setFixedSize(32, 32)
+        self.settings_button.setToolTip("Ses Ayarları")
+        self.settings_button.clicked.connect(self.toggle_settings_panel)
+        self.settings_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                padding: 4px;
+            }
+            QPushButton:hover {
+                background-color: #40444b;
+                border-radius: 4px;
+            }
+        """)
+        
+        # Mikrofon butonu
+        self.mute_button = QPushButton()
+        self.mute_button.setIcon(QIcon("client/assets/mic.png"))
+        self.mute_button.setIconSize(QSize(24, 24))
+        self.mute_button.setFixedSize(40, 40)
+        self.mute_button.setToolTip("Mikrofonu Kapat")
+        self.mute_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                padding: 8px;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #40444b;
+            }
+        """)
+        self.mute_button.clicked.connect(self.toggle_mute)
+        
+        # Hoparlör butonu
+        self.speaker_button = QPushButton()
+        self.speaker_button.setIcon(QIcon("client/assets/speaker.png"))
+        self.speaker_button.setIconSize(QSize(24, 24))
+        self.speaker_button.setFixedSize(40, 40)
+        self.speaker_button.setToolTip("Hoparlörü Kapat")
+        self.speaker_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                padding: 8px;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #40444b;
+            }
+        """)
+        self.speaker_button.clicked.connect(self.toggle_speaker)
+        
+        user_info_layout.addWidget(self.mute_button)
+        user_info_layout.addWidget(self.speaker_button)
+        user_info_layout.addWidget(self.settings_button)
+        
+        # Kullanıcı bilgileri ve butonlar için bir widget oluşturuyoruz
+        user_info_widget = QWidget()
+        user_info_widget.setLayout(user_info_layout)
+        
+        # Sol panelin en altına kullanıcı bilgileri widget'ını ekliyoruz
+        left_panel_layout.addStretch()  # Üstteki alanı esnek yapar
+        left_panel_layout.addWidget(user_info_widget)
+        
+        # Sol paneli bir widget'a ekliyoruz
+        left_panel_widget = QWidget()
+        left_panel_widget.setLayout(left_panel_layout)
+        
+        # Ana layout'a sol paneli ekliyoruz
+        main_layout.addWidget(left_panel_widget)
         
         # Sağ panel (sohbet)
         right_panel = QWidget()
@@ -146,51 +223,11 @@ class MainWindow(QMainWindow):
         right_layout.addWidget(self.chat_area)
         right_layout.addWidget(message_panel)
         
-        # Alt panel (kullanıcı kontrolü)
-        bottom_panel = QWidget()
-        bottom_panel.setStyleSheet("""
-            QWidget {
-                background-color: #292b2f;
-                color: #ffffff;
-            }
-        """)
-        bottom_layout = QHBoxLayout(bottom_panel)
-        
-        # Kullanıcı etiketi
-        self.user_label = QLabel(self.username)
-        self.user_label.setStyleSheet("color: #ffffff;")
-        
-        # Ayarlar butonu
-        self.settings_button = QPushButton()
-        self.settings_button.setIcon(QIcon(str(ASSETS_PATH / "settings.png")))
-        self.settings_button.setIconSize(QSize(20, 20))
-        self.settings_button.setFixedSize(32, 32)
-        self.settings_button.setToolTip("Ses Ayarları")
-        self.settings_button.clicked.connect(self.toggle_settings_panel)
-        self.settings_button.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                padding: 4px;
-            }
-            QPushButton:hover {
-                background-color: #40444b;
-                border-radius: 4px;
-            }
-        """)
-        
-        bottom_layout.addWidget(self.user_label)
-        bottom_layout.addWidget(self.settings_button, alignment=Qt.AlignmentFlag.AlignRight)
-        
-        # Layout'ları birleştir
-        left_layout.addWidget(channels_header)
-        left_layout.addWidget(self.channels_widget)
-        left_layout.addStretch()
-        left_layout.addWidget(bottom_panel)
-        
         # Ana layout'a panelleri ekle
-        main_layout.addWidget(left_panel)
         main_layout.addWidget(right_panel)
+        
+        # Ana widget'a layout'u atayın
+        self.setLayout(main_layout)
         
     def init_channel_widgets(self):
         for channel in ["Genel Sohbet", "Oyun Odası", "Müzik Odası"]:
@@ -211,19 +248,14 @@ class MainWindow(QMainWindow):
             channel_button.setStyleSheet("""
                 QPushButton {
                     text-align: left;
-                    padding: 8px;
-                    background-color: transparent;
-                    color: #8e9297;
+                    padding: 10px 15px;
                     border: none;
                     border-radius: 4px;
+                    color: #dcddde;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
-                    background-color: #36393f;
-                    color: #dcddde;
-                }
-                QPushButton[active="true"] {
-                    background-color: #42464D;
-                    color: white;
+                    background-color: #40444b;
                 }
             """)
             channel_button.clicked.connect(lambda checked, name=channel: self.join_channel(name))
@@ -250,16 +282,23 @@ class MainWindow(QMainWindow):
             
             channel_layout.addWidget(header_container)
             
-            # Kullanıcı listesi widget'ı
+            # Kullanıcılar container'ı
             users_container = QWidget()
+            users_layout = QVBoxLayout(users_container)
+            users_layout.setSpacing(4)
+            users_layout.setContentsMargins(15, 8, 15, 8)
+            
             users_container.setStyleSheet("""
                 QWidget {
                     background-color: transparent;
                 }
+                QLabel {
+                    color: #dcddde;
+                    padding: 10px 15px;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
             """)
-            users_layout = QVBoxLayout(users_container)
-            users_layout.setSpacing(2)
-            users_layout.setContentsMargins(20, 0, 0, 0)  # Sol margin için
             
             channel_layout.addWidget(users_container)
             
@@ -315,8 +354,9 @@ class MainWindow(QMainWindow):
                     user_label = QLabel(f"👤 {self.username}")
                     user_label.setStyleSheet("""
                         color: #dcddde;
-                        padding: 4px 8px 4px 8px;
-                        font-size: 14px;
+                        padding: 6px 10px;
+                        font-size: 16px;
+                        font-weight: 500;
                     """)
                     ch_widgets['users'][self.username] = user_label
                     ch_widgets['users_layout'].addWidget(user_label)
@@ -329,8 +369,9 @@ class MainWindow(QMainWindow):
                                 user_label = QLabel(f"👤 {username}")
                                 user_label.setStyleSheet("""
                                     color: #dcddde;
-                                    padding: 4px 8px 4px 8px;
-                                    font-size: 14px;
+                                    padding: 6px 10px;
+                                    font-size: 16px;
+                                    font-weight: 500;
                                 """)
                                 ch_widgets['users'][username] = user_label
                                 ch_widgets['users_layout'].addWidget(user_label)
@@ -380,23 +421,11 @@ class MainWindow(QMainWindow):
             self.audio_manager.stop_recording()
             self.audio_manager.stop_playback()
             
-            # Mikrofon durumunu güncelle
+            # Sadece mikrofon durumunu güncelle
             self.is_muted = True
-            self.mute_button.setStyleSheet("""
-                QPushButton {
-                    background-color: transparent;
-                    border: none;
-                    padding: 4px;
-                }
-                QPushButton:hover {
-                    background-color: #40444b;
-                    border-radius: 4px;
-                }
-                QPushButton:checked {
-                    background-color: #ed4245;
-                    border-radius: 4px;
-                }
-            """)
+            # Mikrofon butonunun stilini güncelle
+            self.mute_button.setIcon(QIcon("client/assets/mic_off.png"))
+            self.mute_button.setToolTip("Mikrofonu Aç")
 
     def handle_send_message(self):
         """Mesaj gönderme işlemi"""
@@ -421,9 +450,6 @@ class MainWindow(QMainWindow):
         
     def handle_user_joined(self, username, room):
         """Kullanıcı kanala katıldığında"""
-        print(f"\n[DEBUG] User joined event - username: {username}, room: {room}")
-        print(f"[DEBUG] Current room: {self.socket.current_room}")
-        
         if room == self.socket.current_room and username != self.username:
             print(f"[DEBUG] Adding user to channel: {username}")
             self.chat_area.append(f"<i>{username} kanala katıldı</i>")
@@ -434,14 +460,13 @@ class MainWindow(QMainWindow):
                     user_label = QLabel(f"👤 {username}")
                     user_label.setStyleSheet("""
                         color: #dcddde;
-                        padding: 4px 8px 4px 8px;
+                        padding: 10px 15px;
                         font-size: 14px;
+                        font-weight: 500;
                     """)
                     ch_widgets['users'][username] = user_label
                     ch_widgets['users_layout'].addWidget(user_label)
                     ch_widgets['users_container'].show()
-                    print(f"[DEBUG] Added user label for: {username}")
-                    print(f"[DEBUG] Current users in widget: {list(ch_widgets['users'].keys())}")
 
     def handle_user_left(self, username, room):
         """Kullanıcı kanaldan ayrıldığında"""
@@ -466,56 +491,25 @@ class MainWindow(QMainWindow):
         self.is_muted = False  # Mikrofon açık başlar
         self.is_speaker_muted = False  # Hoparlör açık başlar
         
-        # Mikrofon butonu
-        self.mute_button = QPushButton()
-        self.mute_button.setIcon(QIcon("client/assets/mic_off.png"))
-        self.mute_button.setIconSize(QSize(24, 24))
-        self.mute_button.setFixedSize(40, 40)
-        self.mute_button.setToolTip("Mikrofonu Kapat")
-        self.mute_button.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                padding: 8px;
-                border-radius: 4px;
-            }
-            QPushButton:hover {
-                background-color: #40444b;
-            }
-        """)
-        self.mute_button.clicked.connect(self.toggle_mute)
-        
-        # Hoparlör butonu
-        self.speaker_button = QPushButton()
-        self.speaker_button.setIcon(QIcon("client/assets/speaker_off.png"))
-        self.speaker_button.setIconSize(QSize(24, 24))
-        self.speaker_button.setFixedSize(40, 40)
-        self.speaker_button.setToolTip("Hoparlörü Kapat")
-        self.speaker_button.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                padding: 8px;
-                border-radius: 4px;
-            }
-            QPushButton:hover {
-                background-color: #40444b;
-            }
-        """)
-        self.speaker_button.clicked.connect(self.toggle_speaker)
-        
         # Ses akışını başlat
         self.audio_manager.start_recording()
         self.audio_manager.start_playback()
 
     def handle_audio_data(self, audio_data):
-        """Mikrofondan gelen ses verisini server'a gönder"""
-        if self.socket.current_room:
-            self.socket.send_audio(audio_data)
-            # Ses iletilirken kullanıcı adını yeşil yap
-            if hasattr(self, 'current_user_label') and self.current_user_label:
-                self.current_user_label.setStyleSheet("color: #43b581;")  # Yeşil renk
-                self.voice_timer.start(100)  # 100ms sonra rengi normale döndür
+        """Ses verisi hazır olduğunda server'a gönder"""
+        if not self.is_muted and self.socket.current_room:
+            try:
+                if hasattr(self, 'current_user_label') and self.current_user_label:
+                    try:
+                        self.current_user_label.setStyleSheet("color: #43b581;")  # Yeşil renk
+                        self.voice_timer.start(100)  # 100ms sonra rengi normale döndür
+                    except RuntimeError:
+                        pass  # Label silinmişse hata vermeyi engelle
+                
+                # Ses verisini server'a gönder
+                self.socket.send_audio(audio_data)
+            except Exception as e:
+                print(f"Ses verisi gönderme hatası: {e}")
 
     def handle_received_audio(self, audio_data):
         """Server'dan gelen ses verisini çal"""
@@ -534,31 +528,63 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Ses verisi işleme hatası: {e}")
 
+    def update_user_label(self):
+        """Kullanıcı etiketini güncelle"""
+        if self.socket.current_room in self.channel_widgets:
+            ch_widgets = self.channel_widgets[self.socket.current_room]
+            if self.username in ch_widgets['users']:
+                # Yatay layout oluştur
+                user_container = QWidget()
+                user_layout = QHBoxLayout(user_container)
+                user_layout.setContentsMargins(10, 0, 0, 0)
+                user_layout.setSpacing(2)
+                
+                # Kullanıcı adı label'ı
+                name_label = QLabel(f"♦ {self.username}")
+                name_label.setStyleSheet(ch_widgets['users'][self.username].styleSheet())
+                
+                # Layout'a ekle
+                user_layout.addWidget(name_label)
+                
+                # Mikrofon ikonu
+                if self.is_muted:
+                    mic_icon = QLabel()
+                    mic_icon.setPixmap(QIcon("client/assets/mic_off.png").pixmap(QSize(16, 16)))
+                    user_layout.addWidget(mic_icon)
+                
+                # Hoparlör ikonu
+                if self.is_speaker_muted:
+                    speaker_icon = QLabel()
+                    speaker_icon.setPixmap(QIcon("client/assets/speaker_off.png").pixmap(QSize(16, 16)))
+                    user_layout.addWidget(speaker_icon)
+                
+                # Eski label'ı kaldır ve yenisini ekle
+                old_label = ch_widgets['users'][self.username]
+                ch_widgets['users_layout'].replaceWidget(old_label, user_container)
+                old_label.deleteLater()
+                ch_widgets['users'][self.username] = user_container
+
     def toggle_mute(self):
         """Mikrofon durumunu değiştir"""
         self.is_muted = not self.is_muted
-        
+        self.mute_button.setIcon(QIcon("client/assets/mic_off.png" if self.is_muted else "client/assets/mic.png"))
+        self.mute_button.setToolTip("Mikrofonu Aç" if self.is_muted else "Mikrofonu Kapat")
         if self.is_muted:
-            self.mute_button.setIcon(QIcon("client/assets/mic.png"))
-            self.mute_button.setToolTip("Mikrofonu Aç")
             self.audio_manager.stop_recording()
         else:
-            self.mute_button.setIcon(QIcon("client/assets/mic_off.png"))
-            self.mute_button.setToolTip("Mikrofonu Kapat")
             self.audio_manager.start_recording()
+        self.update_user_label()
 
     def toggle_speaker(self):
         """Hoparlör durumunu değiştir"""
         self.is_speaker_muted = not self.is_speaker_muted
-        
+        self.speaker_button.setIcon(QIcon("client/assets/speaker_off.png" if self.is_speaker_muted else "client/assets/speaker.png"))
+        self.speaker_button.setToolTip("Hoparlörü Aç" if self.is_speaker_muted else "Hoparlörü Kapat")
         if self.is_speaker_muted:
-            self.speaker_button.setIcon(QIcon("client/assets/speaker.png"))
-            self.speaker_button.setToolTip("Hoparlörü Aç")
             self.audio_manager.stop_playback()
         else:
-            self.speaker_button.setIcon(QIcon("client/assets/speaker_off.png"))
-            self.speaker_button.setToolTip("Hoparlörü Kapat")
             self.audio_manager.start_playback()
+        self.update_user_label()
 
     def toggle_settings_panel(self):
         """Ses ayarları panelini aç/kapat"""
@@ -594,7 +620,10 @@ class MainWindow(QMainWindow):
     def reset_voice_indicator(self):
         """Ses iletimi bitince kullanıcı adı rengini normale döndür"""
         if hasattr(self, 'current_user_label') and self.current_user_label:
-            self.current_user_label.setStyleSheet("color: #dcddde;")  # Normal renk
+            try:
+                self.current_user_label.setStyleSheet("color: #dcddde;")  # Normal renk
+            except RuntimeError:
+                pass  # Label silinmişse hata vermeyi engelle
         self.voice_timer.stop()
 
     def eventFilter(self, obj, event):
